@@ -1,0 +1,18 @@
+---
+title: "LC_MS_Analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+```{r }
+CalCurve1 <- read_csv("Data/CalCurve1.csv", 
+    col_types = cols(X6 = col_skip(), X7 = col_skip(), 
+        X8 = col_skip(), X9 = col_skip())) %>%
+  slice(1:4)
+View(CalCurve1)
+```
+

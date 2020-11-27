@@ -21,7 +21,7 @@ CalCurve1 <- CalCurve1 %>%
   pivot_longer(cols= 3:5, values_to= "PeakArea") %>%
   rename(Conc = "[Levoglucosan] (ug/mL)")
 
-ggplot(CalCurve1, aes(x= Conc, y= PeakArea)) + theme_bw() + geom_point() 
+ggplot(CalCurve1, aes(x= Conc, y= PeakArea)) + theme_bw() + geom_point() + geom_smooth(method = lm, se = FALSE) + labs(x= "Concentration of Levoglucosan (ug/mL)", y = "Peak Area", title="Calibration Curve for Levoglucosan")
 
 model <- lm(PeakArea ~ Conc, data= CalCurve1)  
 slope <- model$coefficients[2]
@@ -29,9 +29,27 @@ intercept <- model$coefficients[1]
 slope_std <- summary(model)$coefficients[2,2]
 intercept_std <- summary(model)$coefficients[1,2]
 equation <- tibble(slope, slope_std, intercept, intercept_std)
-  
 
-SummaryPlot <- CalCurve1 %>% 
-  sumarise()
 ```
+
+```{r}
+SampleAreas <- read_csv("~/R/LC_MS/Data/sampleareas.csv")
+
+SampleAreas <- SampleAreas %>%
+  mutate(Concentration = (SampleAreas$Area - equation$intercept) / equation$slope, 
+         Concentration_Error = Concentration*sqrt((equation$slope_std/equation$slope)^2 + (equation$intercept_std/equation$intercept)^2))
+
+view(SampleAreas)
+```
+
+```{r Concentration in the Air}
+SampleAreasAir <- SampleAreas %>%
+  mutate(ConcAir = (Concentration * 2 *70)/24,
+ConcAirError = (Concentration_Error * 2 * 70)/24)
+```
+
+
+
+
+
 

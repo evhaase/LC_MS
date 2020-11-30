@@ -82,10 +82,17 @@ AllMerged= full_join(DatesMerged, CoastsMerged, by= c("Location", "Area", "Conce
 ```
 
 ```{r}
-ggplot(AllMerged, aes(x= Date, y= ConcAir, fill= Date)) + theme_bw() + geom_point() + geom_boxplot() + facet_wrap(~Coast) + labs(x= "Date", y = "Levoglucosan (µg/M^3)", title="Levoglucosan Concentations By Date") 
+ggplot(AllMerged, aes(x= Date, y= ConcAir, fill= Date))  + geom_point() + geom_boxplot() + facet_wrap(~Coast) + labs(x= "Date", y = "Levoglucosan (µg/M^3)", title="Levoglucosan Concentations By Date")+ theme(plot.title=element_text(size=16),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+)
 
 
-ggplot(AllMerged, aes(x= Coast, y= ConcAir, fill= Coast)) + theme_bw() + geom_point() + geom_boxplot() + facet_wrap(~Date) + labs(x= "Coast", y = "Levoglucosan (µg/M^3)", title="Levoglucosan Concentations By Coast")
+ggplot(AllMerged, aes(x= Coast, y= ConcAir, fill= Coast))  + geom_point() + geom_boxplot() + facet_wrap(~Date) + labs(x= "Coast", y = "Levoglucosan (µg/M^3)", title="Levoglucosan Concentations By Coast") +
+  theme(plot.title=element_text(size=16,face="bold"),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+)
 ```
 
 ```{r }
@@ -143,10 +150,10 @@ p = ggplot(data=WrangledMergedDateCoast,
     xlab('Date')+ ylab("")+
     geom_errorbar(aes(ymin=lower_ci, ymax=upper_ci,col=Coast),width=0.5,cex=1)+ 
     facet_wrap(~Date,strip.position="left",nrow=9,scales = "free_y") +
-    theme(plot.title=element_text(size=16,face="bold"),
+    theme(plot.title=element_text(size=13),
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank(),
-)+ coord_flip()
+)+ coord_flip()+labs(x= "Levoglucosan (µg/M^3)", y = "Date", title="Confidence Intervals of East and West Data by Date")
  p
 
 ```
@@ -193,7 +200,9 @@ t.test2(22.39063, 19.42787, 0.3906315, 0.287577, 6,6)
 t.test2(34.55706,22.39063, 2.0069464,0.3906315, 6, 6 )
 #2020vs 1950
 t.test2(34.55706,19.42787, 2.0069464,0.287577, 6, 6 )
+#2020 west vs east
 
+t.test2(41.18383,27.93030, 2.57170020, 0.04963259, 3, 3)
 ```
 
 ```{r}
@@ -201,4 +210,10 @@ t.test2(34.55706,19.42787, 2.0069464,0.287577, 6, 6 )
 ggplot(WrangledMergedDateCoast, aes(x= Date, y= mean_conc, fill= Coast)) + theme_bw() + geom_point() + geom_point() + facet_wrap(~Date) + labs(x= "Coast", y = "Levoglucosan (µg/M^3)", title="Levoglucosan Concentations By Coast")
 
 
+```
+
+```{r}
+#grubbs test
+library(outliers)
+grubbs.test(AllMerged$ConcAir, type=20)
 ```
